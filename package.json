@@ -4,8 +4,12 @@
   "description": "Server Side Include",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "eslint": "eslint index.js"
   },
+  "pre-commit": [
+    "eslint"
+  ],
   "repository": {
     "type": "git",
     "url": "http://git.firstshare.cn/fe-tools/ssi.git"
@@ -15,5 +19,8 @@
     "include"
   ],
   "author": "luoying",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "pre-commit": "^1.1.3"
+  }
 }
