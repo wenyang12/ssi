@@ -25,13 +25,13 @@ const getMatchs = (data, reg) => {
 };
 
 // 执行include
-const include = (html, root) => {
+const include = (html, base, root) => {
   // 扫描html文档，提取出来匹配的include片段
   let matchs = getMatchs(html, REG_INCLUDE);
   matchs.forEach((match) => {
     // 相对路径，相对于请求页面；绝对路径，相对于root
     let isAbsolute = match[1] === 'virtual';
-    let ssiUrl = isAbsolute ? path.join(root, match[2]) : path.resolve(root, match[2]);
+    let ssiUrl = isAbsolute ? path.join(root, match[2]) : path.resolve(base, match[2]);
     let ssiHtml = '';
 
     try {
@@ -72,5 +72,5 @@ const resolveStatic = (ssi, base, root) => {
 exports.render = (html, options) => {
   if (options.isUrl) html = fs.readFileSync(html, 'utf8');
   if (!REG_SSI.test(html)) return html;
-  return include(html, options.root);
+  return include(html, options.root, options.root);
 };
