@@ -1,0 +1,19 @@
+{
+  "name": "@tools/ssi",
+  "version": "1.0.0",
+  "description": "Server Side Include",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://git.firstshare.cn/fe-tools/ssi.git"
+  },
+  "keywords": [
+    "ssi",
+    "include"
+  ],
+  "author": "luoying",
+  "license": "ISC"
+}
