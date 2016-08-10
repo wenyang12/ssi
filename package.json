@@ -1,6 +1,6 @@
 {
   "name": "@tools/ssi",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Server Side Include",
   "main": "index.js",
   "scripts": {

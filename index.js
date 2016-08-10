@@ -35,7 +35,7 @@ const include = (html, base, root) => {
     let ssiHtml = '';
 
     try {
-      ssiHtml = fs.readFileSync(ssiUrl, 'utf8');
+      ssiHtml = fs.readFileSync(ssiUrl, 'utf8').replace(/\n*$/, ''); // 删除末尾换行
     } catch (e) {
       ssiHtml = `<p>ssi error: not found ${match[2]}</p>`;
     }
