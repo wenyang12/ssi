@@ -12,10 +12,8 @@ const path = require('path');
 const REG_SSI = /<html.+_ssi="true"/;
 // include规则
 const REG_INCLUDE = /<!\-\-\#\s*include\s+(file|virtual)=["|'](.*)["|']\s*\-\->/gi;
-// 静态资源类型列表
-const STATIC_TYPES = 'js|css|png|jpg|jpeg|gif|webp|svg|mp4|webm|mp3';
-// 扫描静态资源
-const REG_STATIC = new RegExp(`[src|href]+=["|']([^http|https|\/\/].+\\.[${STATIC_TYPES}]+)["|']`, 'gi');
+// 静态资源类型列表，默认定义几种常见格式
+let static_types = 'js|css|png|jpg|jpeg|gif|webp|svg|mp4|webm|mp3';
 
 const getMatchs = (data, reg) => {
   let matchs = [];
@@ -55,7 +53,8 @@ const include = (html, base, root) => {
 // 如果引用的就是绝对路径，略过
 const resolveStatic = (ssi, base, root) => {
   // 扫描ssi碎片，提取出来匹配的静态资源引用
-  let matchs = getMatchs(ssi, REG_STATIC);
+  let reg_static = new RegExp(`[src|href]+=["|']([^http|https|\/\/].+\\.[${static_types}]+)["|']`, 'gi');
+  let matchs = getMatchs(ssi, reg_static);
   matchs.forEach((match) => {
     let st = match[1];
     if (path.isAbsolute(st)) return;
@@ -72,5 +71,6 @@ const resolveStatic = (ssi, base, root) => {
 exports.render = (html, options) => {
   if (options.isUrl) html = fs.readFileSync(html, 'utf8');
   if (!REG_SSI.test(html)) return html;
+  if (options.staticTypes) static_types = options.staticTypes;
   return include(html, options.root, options.root);
 };
