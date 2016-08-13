@@ -7,13 +7,14 @@
 
 const fs = require('fs');
 const path = require('path');
+const resolvePath = require('resolve-path');
 
 // 检测页面是否启用ssi
 const REG_SSI = /<html.+_ssi="true"/;
 // include规则
 const REG_INCLUDE = /<!\-\-\#\s*include\s+(file|virtual)=["|'](.*)["|']\s*\-\->/gi;
-// 静态资源类型列表，默认定义几种常见格式
-let static_types = 'js|css|png|jpg|jpeg|gif|webp|svg|mp4|webm|mp3';
+// 匹配ssi中的资源引用
+const REG_ASSETS = /(?:src|href|poster)=["|']?([^"']+)["|']?/gi;
 
 const getMatchs = (data, reg) => {
   let matchs = [];
@@ -40,28 +41,13 @@ const include = (html, base, root) => {
 
     let ssiBase = path.dirname(ssiUrl);
     // resolve ssi中引用的静态资源的相对路径
-    ssiHtml = resolveStatic(ssiHtml, ssiBase, root);
+    ssiHtml = resolvePath(ssiHtml, ssiBase, root, REG_ASSETS);
     // 对ssi本身执行include（因为ssi内部也可能有include）
     ssiHtml = include(ssiHtml, ssiBase, root);
     // 用include 进来的ssi片段替换include碎片引用
     html = html.replace(match[0], ssiHtml);
   });
   return html;
-};
-
-// 将ssi碎片中引用的静态资源相对路径转换为绝对路径
-// 如果引用的就是绝对路径，略过
-const resolveStatic = (ssi, base, root) => {
-  // 扫描ssi碎片，提取出来匹配的静态资源引用
-  let reg_static = new RegExp(`[src|href]+=["|']([^http|https|\/\/].+\\.[${static_types}]+)["|']`, 'gi');
-  let matchs = getMatchs(ssi, reg_static);
-  matchs.forEach((match) => {
-    let st = match[1];
-    if (path.isAbsolute(st)) return;
-    st = path.resolve(base, st).replace(root, '');
-    ssi = ssi.replace(match[1], st);
-  });
-  return ssi;
 };
 
 // 渲染ssi
@@ -71,6 +57,5 @@ const resolveStatic = (ssi, base, root) => {
 exports.render = (html, options) => {
   if (options.isUrl) html = fs.readFileSync(html, 'utf8');
   if (!REG_SSI.test(html)) return html;
-  if (options.staticTypes) static_types = options.staticTypes;
   return include(html, options.root, options.root);
 };
