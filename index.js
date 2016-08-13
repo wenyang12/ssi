@@ -7,7 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const resolvePath = require('resolve-path');
+const resolvePath = require('@tools/resolve-path');
 
 // 检测页面是否启用ssi
 const REG_SSI = /<html.+_ssi="true"/;
