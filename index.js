@@ -13,9 +13,9 @@ const resolvePath = require('@tools/resolve-path');
 // 检测页面是否启用ssi
 const REG_SSI = /<html.+_ssi="true"/;
 // include规则
-const REG_INCLUDE = /<!\-\-\#\s*include\s+(file|virtual)=["|'](.*)["|']\s*\-\->/gi;
+const REG_INCLUDE = /<!\-\-#\s+include\s+(file|virtual)=["|']?([^"|']+)["|']?\s*\-\->/gi;
 // 匹配ssi中的资源引用（排除 a[href="#anchor"]）
-const REG_ASSETS = /(?:src|href|poster)=["|']?([^"'#]+)["|']?/gi;
+const REG_ASSETS = /<[a-zA-Z]+[^<>]+(?:src|href|poster)=["|']?([^"']+)["|']?[^>]*\/?>/gi;
 
 // 执行include
 const include = (html, dirname, root) => {
