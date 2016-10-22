@@ -28,6 +28,6 @@
   },
   "dependencies": {
     "@tools/matchs": "^1.0.1",
-    "@tools/resolve-path": "^1.0.7"
+    "@tools/resolve-path": "^1.0.8"
   }
 }
